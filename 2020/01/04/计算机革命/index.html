@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="MachineGeek" />
+   
+  <meta name="description" content="MachineGeek Blog" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    计算机革命 |  MachineGeek
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="MachineGeek" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-计算机革命"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  计算机革命
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/01/04/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%9D%A9%E5%91%BD/" class="article-date">
+  <time datetime="2020-01-03T18:27:42.000Z" itemprop="datePublished">2020-01-04</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Basic/">Basic</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2.9k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">9 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p><img src="https://store.machine-geek.cn/0020.jpg" alt="软件架构"></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇文章我会详细的讲解现在软件的架构演变历程，还有这些年由计算机的发展衍生出来的学科和行业。这对于理解为什么今天人们要构建如此庞大的”怪兽“非常有帮助，看一看这些东西的发生历史，前辈们在遇到这些挑战的时候是如何解决的。</p>
+<h2 id="软件开发的架构"><a href="#软件开发的架构" class="headerlink" title="软件开发的架构"></a>软件开发的架构</h2><h3 id="Single-Machine-Architecture"><a href="#Single-Machine-Architecture" class="headerlink" title="Single Machine Architecture"></a>Single Machine Architecture</h3><p><strong>单机（Single machine）时代</strong>：这个年代是最早的年代，计算机并没有普及。这个时代还没有网络，计算机非常庞大、昂贵，很少有人能够用得起计算机。想要获得程序是非常困难的。</p>
+<h3 id="Client-Server-Architecture"><a href="#Client-Server-Architecture" class="headerlink" title="Client/Server Architecture"></a>Client/Server Architecture</h3><p><strong>客户端/服务器（Client/Server）时代（也简称C/S）</strong>：互联网诞生，发展非常迅猛。人们能够通过网络传输数据。人们为了分享数据开发了服务器程序和客户端程序。服务器其实也只是一台计算机，只不过它运行了等待着你访问的程序，并且它不关机，只要计算机还在运行，程序也没有出错。你只需要下载客户端程序，就可以传输、获取远方服务器上的数据。服务器上专门存储数据的程序叫做数据库。</p>
+<h3 id="Browser-Server-Architecture"><a href="#Browser-Server-Architecture" class="headerlink" title="Browser/Server Architecture"></a>Browser/Server Architecture</h3><p><strong>浏览器/服务器（Browser/Server）时代（简称B/S）</strong>：Web时代来临，越来越多的人倾向从C/S开发转向B/S的开发，因为无需安装客户端程序，也不必时刻更新客户端，浏览器打开访问即可。但并不意味着C/S的时代结束，很多功能还是需要C/S架构才能够完成。</p>
+<a id="more"></a>
+<h2 id="架构的革命"><a href="#架构的革命" class="headerlink" title="架构的革命"></a>架构的革命</h2><h3 id="Monolith-Architecture"><a href="#Monolith-Architecture" class="headerlink" title="Monolith Architecture"></a>Monolith Architecture</h3><p><strong>单体（Monolith）架构：</strong>这里指的是服务器程序，所有的业务逻辑，功能模块都打包到一起，编译成一个程序，运行在一台计算机上。</p>
+<h4 id="初期"><a href="#初期" class="headerlink" title="初期"></a>初期</h4><p>All in one是对这个时代的总结，代码没有分层，全部打包在一起，一台服务器安装数据库，然后运行服务器程序，提供服务。</p>
+<h4 id="中期"><a href="#中期" class="headerlink" title="中期"></a>中期</h4><p>软件稳定性太差，报错直接显示在页面上。随着访问人数的增加服务器开始不堪重负。人们开始分层开发，服务器程序开始MVC设计模式，提高了软件的稳定性和维护性。开始数据分离，把数据库单独的部署到了另外的服务器上。</p>
+<h4 id="后期"><a href="#后期" class="headerlink" title="后期"></a>后期</h4><p>在前面的基础上，把服务器类别又进行了详细的划分。分了文件服务器、数据库服务器、应用服务器、缓存服务器等不同的服务器，并在程序与数据库中间加入了Cache，对于一些常用数据不用每次都去数据库里面查询了。服务性能有显著的提升。</p>
+<h3 id="Cluster-Architecture"><a href="#Cluster-Architecture" class="headerlink" title="Cluster Architecture"></a>Cluster Architecture</h3><p><strong>集群（Cluster）架构：</strong>增加多台计算机，每台计算机上运行着相同的程序，通过负载均衡来分配任务。</p>
+<h4 id="初期-1"><a href="#初期-1" class="headerlink" title="初期"></a>初期</h4><p>前面无论怎么改良，一旦想要升级程序、增加功能，都必须把程序终止，替换新的程序。服务器始终会因为各种可能性而中断服务。人们开始部署多台程序，通过负载均衡调度器来分配请求服务。单台服务器宕机过后其他的服务器依然能够提供服务。</p>
+<h4 id="中期-1"><a href="#中期-1" class="headerlink" title="中期"></a>中期</h4><p>动静分离，把静态资源和动态资源进行了详细的划分，提升了静态资源文件的传输性能。数据库服务器进行了读写分离，分为了读服务器，写服务器。他们的数据都保持着一致，前面有着重重缓存减少数据库服务器的压力。一旦有新的数据写入写服务器，马上会同步到读服务器中。</p>
+<h4 id="后期-1"><a href="#后期-1" class="headerlink" title="后期"></a>后期</h4><p>内容分发网络（Content Delivery Network），简称 CDN），其原理是将源内容同步到全国各边缘节点，配合精准的调度系统，将用户的请求分配至最适合他的服务器节点，使用户可以以最快的速度取得他所需的内容。配合反向代理，大大提高了水平。</p>
+<h3 id="Distributed-Architecture"><a href="#Distributed-Architecture" class="headerlink" title="Distributed Architecture"></a>Distributed Architecture</h3><p><strong>分布式（Distributed）架构：</strong>把一个大型的系统拆分成了许多小的功能模块，分别部署在不同的计算机上。它们之间通过网络通信，传递数据，然后共同完成一个任务，组成了一个庞大的系统。</p>
+<h4 id="初期-2"><a href="#初期-2" class="headerlink" title="初期"></a>初期</h4><p>集群加入解决了许多问题，但是互联网越来越火热，用户数量越来越多。只是增加服务器已经达到瓶颈了。单台存储已经非常庞大，一次读写的时间实在是太漫长了。人们开始使用分布式文件系统和分布式数据库系统来提高读写性能。它们每台都只保存了一部分的数据，这一部分数据在其他服务器上也有冗余备份，避免丢失。</p>
+<h4 id="中期-2"><a href="#中期-2" class="headerlink" title="中期"></a>中期</h4><p>单个应用终究是太庞大了，部署麻烦并且有一些功能并不是那么多人使用，人们把服务器程序进行拆分，应用服务器上的程序不再是包含全部功能模块的程序，把一个整体的应用拆分成无数的小的功能模块，分别部署在不同的服务器上。用到的功能多一点的就增加部署了这个功能相应的服务器。</p>
+<h4 id="后期-2"><a href="#后期-2" class="headerlink" title="后期"></a>后期</h4><p>加入了各种各样的消息中间件、虚拟化容器、流处理……技术，使得部署更加快速，伸缩更加灵活。</p>
+<h3 id="ServerLess-Architecture"><a href="#ServerLess-Architecture" class="headerlink" title="ServerLess Architecture"></a>ServerLess Architecture</h3><p>无服务器计算（或简称无服务器）是一种执行模型，其实还是需要服务器，不用我们再来操心并发量，性能等等其他问题了，许多大公司，例如云提供商（AWS，Azure或Google Cloud）负责通过动态分配资源来执行一段代码。并且仅收取用于运行代码的资源量。</p>
+<h2 id="行业的革命"><a href="#行业的革命" class="headerlink" title="行业的革命"></a>行业的革命</h2><h3 id="物联网"><a href="#物联网" class="headerlink" title="物联网"></a>物联网</h3><p>物联网是互联网的一个延伸，互联网的每一个连接点主要是电脑、平板、手机。物联网想延伸到更多的智能设备上，例如现在的智能家居、智能手环、智能音响……物联网其实本质还是互联网，物联网要做的事情是让所有物体都嵌入计算机，连接互联网，构建万物互联的世界。</p>
+<h3 id="大数据"><a href="#大数据" class="headerlink" title="大数据"></a>大数据</h3><p>大数据的产生背景是由于服务器存储的数据实在是太庞大了，人们在升级架构和处理数据时，缺发现这些庞大的数据中隐藏着非常具有价值的信息，采集，分析这些数据就是大数据行业的主要工作了。我们每天在互联网上的浏览，聊天，发照片……全球那么多人，每时每刻都在产生着可怕的数据量。什么样类型的数据都有，科技公司通过分析和计算这些数据，可以总结出非常多具有价值的信息，广泛应用于科学研究、商业、医学……等。科技公司通过大数据可以预测的人类社会、各行各业的未来趋势。</p>
+<h3 id="云计算"><a href="#云计算" class="headerlink" title="云计算"></a>云计算</h3><p>云计算这个概念刚刚出来的时候，几乎所有的人都以为是大规模的复杂问题计算。不少大公司耗尽心血制造出了满足大规模计算的“怪兽”，但是发现运用真的比较少，原因是计算一次成本实在太昂贵，况且有这样需求的都是科研机构或者大公司。他们大多数都已经具备这种能力了，直到AWS的出现才告诉了大家什么是云计算。云计算就是计算服务的提供（包括服务器、存储、数据库、网络、软件、分析……）。通过 Internet（云）提供快速创新、弹性资源和规模经济。现在许多科技公司提供云服务，以前我们还需要自己买服务器，维护，保证它一直正常使用。现在直接在商城购买即可，例如服务器，买了过后直接远程操控，上传、运行自己的程序。再也不需要你自己跑去机房检查。供电，宕机这些都不再需要你考虑了，又服务商统一管理维护。对于云服务，通常你只需使用多少支付多少，从而帮助降低运营成本，使基础设施更有效地运行，并能根据业务需求的变化调整对服务的使用。</p>
+<h3 id="区块链"><a href="#区块链" class="headerlink" title="区块链"></a>区块链</h3><p>区块链从本质上来说它是一个共享数据库，现在我们所有的数据都是存储在由程序提供商的数据库服务器上的，如果数据库数据丢失，或者遭到恶意攻击、管理员胡乱修改怎么办。区块链想做的事情就是去中心化，把数据交给所有人共同维护。存储于区块链的数据或信息，具有“不可伪造”、“全程留痕”、“可以追溯”、“公开透明”、“集体维护”等特征。比特币也是基于区块链开发的。简单来说，区块链就是一个分布式的账本，每个节点都可以显示总账，然后维护总账，而且不能篡改账本。</p>
+<h3 id="人工智能"><a href="#人工智能" class="headerlink" title="人工智能"></a>人工智能</h3><p>人工智能是一个模仿人类与人类思维相关的“认知”功能的机器，但它并不真的具有智慧，它依然还只是一个程序，只会01010101。以前的人工智能都是以针对某个特殊问题的算法，还有大量工程师提前写好的的逻辑判断来完成的。现在已经发展出很多新的概念。有了许多实现的分支。当下是以人工神经网络为主流，理念是基于生物学为基础，模仿人脑大脑的神经元来计算。把数据输入多层的神经网络，每一个连接都有权重，把输入数据结合权重计算出预测结果。基本理念例如我想通过神经网络来预测我今天会不会写代码，那么影响我是否决定去写代码的事情有：明天是否上课、我困不困、我心情好不好……，把所有影响我的事情都作为输入，它们都有一个权重，然后结合每一个节点的权重进行计算，得出一个数值。再通过一个预先设定的阈值，判断我写代码的可能性。假如我其中某一个输入权重很高，我学到一门非常厉害的技术，我迫不及待想要试一下，非常亢奋！其他的权重低的影响就会小很多了。那么最后的预测结果我写代码的可能性就会大大提高。人工神经网络的实现需要大量的数据来训练，不断的试错，调整权重得到最佳的预测模型。所以人工智能的前提就是大数据。</p>
+<h2 id="结言"><a href="#结言" class="headerlink" title="结言"></a>结言</h2><p>时代在进步，架构和新技术随着人类的进步依然还在发展，保持学习。</p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://blog.machine-geek.cn/2020/01/04/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%9D%A9%E5%91%BD/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/" rel="tag">Architecture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Browser-Server/" rel="tag">Browser/Server</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Client-Server/" rel="tag">Client/Server</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cluster/" rel="tag">Cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed/" rel="tag">Distributed</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Internet/" rel="tag">Internet</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Monolith/" rel="tag">Monolith</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Software/" rel="tag">Software</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/01/13/Goroutine%E5%A4%A9%E7%94%9F%E5%B9%B6%E5%8F%91%E7%9A%84%E5%8E%9F%E7%90%86/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Goroutine天生并发的原理
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/01/02/%E5%89%8D%E7%AB%AF%E7%9A%84%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">前端的人脸识别</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2018-2021
+        <i class="ri-heart-fill heart_icon"></i> MachineGeek
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/logo.jpg" alt="MachineGeek"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>如果觉得作者写的不错，请作者喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://store.machine-geek.cn/0037.png">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://store.machine-geek.cn/0038.png">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="MachineGeek" />
+   
+  <meta name="description" content="MachineGeek Blog" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    SVG矢量详解及Android动画开发 |  MachineGeek
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="MachineGeek" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-SVG矢量(向量)详解及Android开发"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  SVG矢量详解及Android动画开发
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2018/11/22/SVG%E7%9F%A2%E9%87%8F(%E5%90%91%E9%87%8F)%E8%AF%A6%E8%A7%A3%E5%8F%8AAndroid%E5%BC%80%E5%8F%91/" class="article-date">
+  <time datetime="2018-11-22T01:29:34.000Z" itemprop="datePublished">2018-11-22</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2.9k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">13 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p><strong>什么是SVG？</strong><br>可缩放矢量图形是基于可扩展标记语言（标准通用标记语言的子集），用于描述二维矢量图形的一种图形格式。它由万维网联盟制定，是一个开放标准。</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>SVG 指可伸缩矢量图形 (Scalable Vector Graphics)</li>
+<li>SVG 用来定义用于网络的基于矢量的图形</li>
+<li>SVG 使用 XML 格式定义图形</li>
+<li>SVG 图像在放大或改变尺寸的情况下其图形质量不会有所损失</li>
+<li>SVG 是万维网联盟的标准</li>
+<li>SVG 与诸如 DOM 和 XSL 之类的 W3C 标准是一个整体</li>
+</ul>
+</blockquote>
+<h2 id="在Android中如何使用SVG？"><a href="#在Android中如何使用SVG？" class="headerlink" title="在Android中如何使用SVG？"></a>在Android中如何使用SVG？</h2><blockquote>
+<p>Android 5.0（API级别21）是第一个正式支持矢量绘图的版本，可以通过VectorDrawable和AnimatedVectorDrawable来绘制矢量图形，你可以使用Android支持库支持旧版本，支持库提供了VectorDrawableCompat和 AnimatedVectorDrawableCompat类来向下兼容。但VectorDrawable只支持部分SVG的属性，相当于精简版本，不过也能绘制出所有你想要的图形。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="VectorDrawable"><a href="#VectorDrawable" class="headerlink" title="VectorDrawable"></a>VectorDrawable</h2><blockquote>
+<p>VectorDrawable定义静态可绘制对象。与SVG格式类似，每个矢量图形被定义为树形层，由树Path和Group组成。每个的Path包含对象轮廓的几何形状，并由Group包含转换的详细信息。所有Path都会按XML文件中出现的顺序绘制。</p>
+</blockquote>
+<p><img src="https://store.machine-geek.cn/0035.png"></p>
+<blockquote>
+<p>在Android Studio中提供了一个工具Vector asset studio来将一个矢量图形添加到项目中作为XML文件，这点可以自行百度了解一下。</p>
+</blockquote>
+<p>这是一个VectorDrawable XML文件来渲染一个电池充电的图像示例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- res/drawable/battery_charging.xml --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">vector</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line">    &lt;!-- intrinsic size of the drawable --&gt;</span><br><span class="line">    android:height=&quot;24dp&quot;</span><br><span class="line">    android:width=&quot;24dp&quot;</span><br><span class="line">    <span class="comment">&lt;!-- size of the virtual canvas --&gt;</span></span><br><span class="line">    android:viewportWidth=&quot;24.0&quot;</span><br><span class="line">    android:viewportHeight=&quot;24.0&quot;&gt;</span><br><span class="line">   <span class="tag">&lt;<span class="name">group</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:name</span>=<span class="string">&quot;rotationGroup&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:pivotX</span>=<span class="string">&quot;10.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:pivotY</span>=<span class="string">&quot;10.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:rotation</span>=<span class="string">&quot;15.0&quot;</span> &gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">path</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:name</span>=<span class="string">&quot;vect&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:fillColor</span>=<span class="string">&quot;#FF000000&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:pathData</span>=<span class="string">&quot;M15.67,4H14V2h-4v2H8.33C7.6,4 7,4.6 7,5.33V9h4.93L13,7v2h4V5.33C17,4.6 16.4,4 15.67,4z&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:fillAlpha</span>=<span class="string">&quot;.3&quot;</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">path</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:name</span>=<span class="string">&quot;draw&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:fillColor</span>=<span class="string">&quot;#FF000000&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:pathData</span>=<span class="string">&quot;M13,12.5h2L11,20v-5.5H9L11.93,9H7v11.67C7,21.4 7.6,22 8.33,22h7.33c0.74,0 1.34,-0.6 1.34,-1.33V9h-4v3.5z&quot;</span>/&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">group</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">vector</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://store.machine-geek.cn/0036.png"></p>
+<h2 id="额外补充篇：语法知识"><a href="#额外补充篇：语法知识" class="headerlink" title="额外补充篇：语法知识"></a>额外补充篇：语法知识</h2><blockquote>
+<ul>
+<li><code>width</code>、<code>height</code>代表了图片的宽高。</li>
+</ul>
+</blockquote>
+<ul>
+<li><code>viewportWidth</code>、<code>viewportHeight</code>意味着把上面的图片宽高<code>width</code>、<code>height</code>等分成多少份。（示例中把宽24dp高24dp的正方形分成24*24的网格，路径就是用这些网格坐标来描述位置、并连接成图形的。）</li>
+<li><code>fillColor</code>是图形填充的颜色。</li>
+<li><code>pathData</code>描述网格坐标的标签。</li>
+</ul>
+<p>在SVG中，最重要的还是pathData，里面包含了整个矢量图形的坐标路径，它基本上就是字母和数字组成,数字之间可以用空格或者逗号隔开 (但其实逗号会被忽略掉，只是方便我们阅读)。它的命令如下：</p>
+<blockquote>
+<ul>
+<li><strong>M(Move To)：</strong> 移动虚拟画笔到对应的点,但不会绘制，默认的位置是在（0,0）。</li>
+<li><strong>L(Line To)：</strong> 从当前位置画一条直线到对应的坐标点。</li>
+<li><strong>H(Horizontal Line To)：</strong> 从当前位置画一条水平直线到对应的坐标点。</li>
+<li><strong>V(Vertical Lineto)：</strong> 从当前位置画一条垂直直线到对应的坐标点。</li>
+<li><strong>A(Elliptical Arc)：</strong> 从当前位置画一条椭圆弧线到对应的坐标点。</li>
+<li><strong>Q(Quadratic Belzier Curve)：</strong> 从当前位置画一条二阶贝塞尔曲线到对应的坐标点。</li>
+<li><strong>T(Smooth Quadratic Belzier Curveto)：</strong> 当你已经画完一条二阶贝塞尔曲线后，再次延长贝塞尔曲线到相应的坐标点，控制点会根据前一个二阶贝塞尔曲线来推断。</li>
+<li><strong>C(Curveto)：</strong> 从当前位置画一条三阶贝塞尔曲线到对应的坐标点。</li>
+<li><strong>S(Smooth Curvet)：</strong> 当你已经画完一条三阶贝塞尔曲线后，再次延长贝塞尔曲线到相应的坐标点，控制点会根据前一个三阶贝塞尔曲线来推断。</li>
+<li><strong>Z(Close Path)：</strong> 从当前位置画一条线连接起始位置，闭合路径。<br><br/><strong>注意：命令区分大小写，大写命令是基于原点（0,0）的坐标，即绝对坐标，小写的命令是基于当前虚拟画笔的位置，即相对坐标。</strong></li>
+</ul>
+</blockquote>
+<p><strong>M：x,y（移动虚拟画笔）</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">vector</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:width</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:height</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportWidth</span>=<span class="string">&quot;50&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportHeight</span>=<span class="string">&quot;50&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">group</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">path</span> <span class="attr">android:strokeWidth</span>=<span class="string">&quot;1&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:strokeColor</span>=<span class="string">&quot;@color/colorPrimary&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:pathData</span>=<span class="string">&quot;M10,10&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">group</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">vector</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>L：x,y（线段）Z（闭合路径）</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">vector</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:width</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:height</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportWidth</span>=<span class="string">&quot;50&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportHeight</span>=<span class="string">&quot;50&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">group</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">path</span> <span class="attr">android:strokeWidth</span>=<span class="string">&quot;1&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:strokeColor</span>=<span class="string">&quot;@color/colorPrimary&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:pathData</span>=<span class="string">&quot;M10,10 l30,0 l0,30 l-30,0 z&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">group</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">vector</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://store.machine-geek.cn/0006.jpg"><br>通过L命令给出的坐标让我们渲染出了一个正方形，最后使用Z直接闭合路径。由于这样的正方形是垂直和水平线组合成的，我们也可以使用V、H来简写这个路径数据，效果是一样的。<br><strong>V：y（垂直线） H：x（水平线）</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">vector</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:width</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:height</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportWidth</span>=<span class="string">&quot;50&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportHeight</span>=<span class="string">&quot;50&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">group</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">path</span> <span class="attr">android:strokeWidth</span>=<span class="string">&quot;1&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:strokeColor</span>=<span class="string">&quot;@color/colorPrimary&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:pathData</span>=<span class="string">&quot;M10,10 h30 v30 h-30 z&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">group</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">vector</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://store.machine-geek.cn/0007.jpg"><br><strong>A：rx,ry x-axis-rotation large-arc-flag,sweepflag x,y（弧线）</strong></p>
+<blockquote>
+<ul>
+<li><strong>rx ry：</strong>这个椭圆的x轴半径和y轴半径。</li>
+<li><strong>x-axis-rotation：</strong> x轴旋转角度。</li>
+<li><strong>large-arc-flag：</strong> 为0时表示取小弧度，1时取大弧度。</li>
+<li><strong>sweep-flag：</strong> 0取逆时针方向，1取顺时针方向</li>
+<li><strong>x,y：</strong>终点的坐标</li>
+</ul>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">vector</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:width</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:height</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportWidth</span>=<span class="string">&quot;50&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportHeight</span>=<span class="string">&quot;50&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">group</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">path</span> <span class="attr">android:strokeWidth</span>=<span class="string">&quot;1&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:strokeColor</span>=<span class="string">&quot;@color/colorPrimary&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:pathData</span>=<span class="string">&quot;M10,25 a15,15 0 0 1 30,0 z&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">group</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">vector</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>设置rx,ry半径，其他几个参数根据需要修改，再设置x,y坐标，一条弧线就被渲染出来了，下面是弧线总结图。<br><img src="https://store.machine-geek.cn/0025.webp"><br><strong>Q：x1,y1 x,y（二阶贝塞尔曲线）T：x,y（平滑的二次二阶贝塞尔曲线）</strong><br>二阶贝塞尔曲线公式：<br><img src="https://store.machine-geek.cn/0026.webp"></p>
+<p><img src="https://store.machine-geek.cn/0024.webp"></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">vector</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:width</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:height</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportWidth</span>=<span class="string">&quot;50&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportHeight</span>=<span class="string">&quot;50&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">group</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">path</span> <span class="attr">android:strokeWidth</span>=<span class="string">&quot;1&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:strokeColor</span>=<span class="string">&quot;@color/colorPrimary&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:pathData</span>=<span class="string">&quot;M10,25 q7,-20 15,0 t15,0 z&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">group</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">vector</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://store.machine-geek.cn/0008.jpg"><br>通过设置的x1,y1来确定P1的坐标，再设置x,y确定P2的坐标，结合虚拟画笔当前的坐标（P0）就会计算出t的数值，然后渲染出一条二阶贝塞尔曲线，而T指令在你渲染出一条贝塞尔曲线后，只需要指定终点坐标（P2），会再次延伸出一条贝塞尔曲线，P1的坐标是上一条条贝塞尔曲线的对称坐标，这样就会产生上图效果，你还能继续添加T命令来延长它。<br><strong>C：x1,y1 x2,y2 x,y（三阶贝塞尔曲线） S：x2,y2 x,y（平滑的二次三阶贝塞尔曲线）</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1175492-d45534739c6a0b62?imageMogr2/auto-orient/strip%7CimageView2/2/w/558/format/webp"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1175492-6b58a1da6d923644?imageMogr2/auto-orient/strip%7CimageView2/2/w/360/format/webp"></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">vector</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:width</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:height</span>=<span class="string">&quot;50dp&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportWidth</span>=<span class="string">&quot;50&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:viewportHeight</span>=<span class="string">&quot;50&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">group</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">path</span> <span class="attr">android:strokeWidth</span>=<span class="string">&quot;1&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:strokeColor</span>=<span class="string">&quot;@color/colorPrimary&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:pathData</span>=<span class="string">&quot;M10,25 c0,-20 15,-20 15,0 s15,20 15,0&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">group</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">vector</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://store.machine-geek.cn/0009.jpg"><br>三阶贝塞尔曲线与二阶贝塞尔曲线类似，但多了一个控制点P2，通过虚拟画笔当前的坐标（P0），x1,y1的坐标（P1）、x2,y2（P2）、x,y计算出t的值，渲染出一条三阶贝塞尔曲线。S命令与T类似，P1的坐标仍然是上一条贝塞尔曲线的P1对称坐标，指定P2，P3的坐标即可渲染二次三阶贝塞尔曲线，你还能继续添加S命令来延长它。</p>
+<h2 id="AnimatedVectorDrawable"><a href="#AnimatedVectorDrawable" class="headerlink" title="AnimatedVectorDrawable"></a>AnimatedVectorDrawable</h2><p>AnimatedVectorDrawable为矢量图形的属性添加了动画。您可以将一个动画向量图形定义为几个单独的资源文件，或者将其定义为一个单独的XML文件。就是说可以使用多个XML文件或者单个XML文件的方式来完成。<br>多个文件示例：</p>
+<blockquote>
+<ul>
+<li>一个VectorDrawable XML文件。</li>
+<li>一个AnimatedVectorDrawable XML文件，它定义了目标VectorDrawable、要动画的目标路径和组、属性以及ObjectAnimator对象或AnimatorSet对象定义的动画。</li>
+</ul>
+</blockquote>
+<ul>
+<li>一个Animator XML文件</li>
+</ul>
+<p>这是一个VectorDrawable矢量图形文件：<code>vd.xml</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">vector</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">android:height</span>=<span class="string">&quot;64dp&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">android:width</span>=<span class="string">&quot;64dp&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">android:viewportHeight</span>=<span class="string">&quot;600&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">android:viewportWidth</span>=<span class="string">&quot;600&quot;</span> &gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">group</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:name</span>=<span class="string">&quot;rotationGroup&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:pivotX</span>=<span class="string">&quot;300.0&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:pivotY</span>=<span class="string">&quot;300.0&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:rotation</span>=<span class="string">&quot;45.0&quot;</span> &gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">path</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:name</span>=<span class="string">&quot;vectorPath&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:fillColor</span>=<span class="string">&quot;#000000&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:pathData</span>=<span class="string">&quot;M300,70 l 0,-70 70,70 0,0 -70,70z&quot;</span> /&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">group</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">vector</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这是一个AnimatedVectorDrawable矢量动画文件：<code>avd.xml</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">animated-vector</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">android:drawable</span>=<span class="string">&quot;@drawable/vd&quot;</span> &gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">target</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:name</span>=<span class="string">&quot;rotationGroup&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:animation</span>=<span class="string">&quot;@anim/rotation&quot;</span> /&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">target</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:name</span>=<span class="string">&quot;vectorPath&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:animation</span>=<span class="string">&quot;@anim/path_morph&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">animated-vector</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在AnimatedVectorDrawable的XML文件中使用的Animator XML文件:<code>rotation.xml</code>和<code>path_morph.xml</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">objectAnimator</span></span></span><br><span class="line"><span class="tag">   <span class="attr">android:duration</span>=<span class="string">&quot;6000&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">android:propertyName</span>=<span class="string">&quot;rotation&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">android:valueFrom</span>=<span class="string">&quot;0&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">android:valueTo</span>=<span class="string">&quot;360&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">objectAnimator</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:duration</span>=<span class="string">&quot;3000&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:propertyName</span>=<span class="string">&quot;pathData&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:valueFrom</span>=<span class="string">&quot;M300,70 l 0,-70 70,70 0,0   -70,70z&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:valueTo</span>=<span class="string">&quot;M300,70 l 0,-70 70,0  0,140 -70,0 z&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:valueType</span>=<span class="string">&quot;pathType&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>单个文件示例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">animated-vector</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:aapt</span>=<span class="string">&quot;http://schemas.android.com/aapt&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aapt:attr</span> <span class="attr">name</span>=<span class="string">&quot;android:drawable&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">vector</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:width</span>=<span class="string">&quot;24dp&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:height</span>=<span class="string">&quot;24dp&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:viewportWidth</span>=<span class="string">&quot;24&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:viewportHeight</span>=<span class="string">&quot;24&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">path</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:name</span>=<span class="string">&quot;root&quot;</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:strokeWidth</span>=<span class="string">&quot;2&quot;</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:strokeLineCap</span>=<span class="string">&quot;square&quot;</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:strokeColor</span>=<span class="string">&quot;?android:colorControlNormal&quot;</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:pathData</span>=<span class="string">&quot;M4.8,13.4 L9,17.6 M10.4,16.2 L19.6,7&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">vector</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aapt:attr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">target</span> <span class="attr">android:name</span>=<span class="string">&quot;root&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aapt:attr</span> <span class="attr">name</span>=<span class="string">&quot;android:animation&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">objectAnimator</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:propertyName</span>=<span class="string">&quot;pathData&quot;</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:valueFrom</span>=<span class="string">&quot;M4.8,13.4 L9,17.6 M10.4,16.2 L19.6,7&quot;</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:valueTo</span>=<span class="string">&quot;M6.4,6.4 L17.6,17.6 M6.4,17.6 L17.6,6.4&quot;</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:duration</span>=<span class="string">&quot;300&quot;</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:interpolator</span>=<span class="string">&quot;@android:interpolator/fast_out_slow_in&quot;</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:valueType</span>=<span class="string">&quot;pathType&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">aapt:attr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">animated-vector</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>通过使用这种方法，您可以通过XML Bundle格式将相关的XML文件合并到单个XML文件中。在构建应用程序时，aapt标记会创建单独的资源并在矢量动画中引用它们。这种方法需要构建工具24或更高版本，并且输出是向上兼容的。</p>
+</blockquote>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://blog.machine-geek.cn/2018/11/22/SVG%E7%9F%A2%E9%87%8F(%E5%90%91%E9%87%8F)%E8%AF%A6%E8%A7%A3%E5%8F%8AAndroid%E5%BC%80%E5%8F%91/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SVG/" rel="tag">SVG</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2018/12/02/%E4%BB%8E%E5%9B%9E%E8%B0%83%E3%80%81%E9%97%AD%E5%8C%85%E5%88%B0Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%EF%BC%8C10%E5%88%86%E9%92%9F%E6%90%9E%E5%AE%9A%EF%BC%81/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            从回调、闭包到Lambda表达式只需要10分钟
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2018/11/12/%E7%AE%80%E8%BF%B0Linux/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">简述Linux</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2018-2021
+        <i class="ri-heart-fill heart_icon"></i> MachineGeek
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/logo.jpg" alt="MachineGeek"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>如果觉得作者写的不错，请作者喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://store.machine-geek.cn/0037.png">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://store.machine-geek.cn/0038.png">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>

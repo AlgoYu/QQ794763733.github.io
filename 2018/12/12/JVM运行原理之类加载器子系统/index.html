@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="MachineGeek" />
+   
+  <meta name="description" content="MachineGeek Blog" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    JVM运行原理之类加载器子系统 |  MachineGeek
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="MachineGeek" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-JVM运行原理之类加载器子系统"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  JVM运行原理之类加载器子系统
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2018/12/12/JVM%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86%E4%B9%8B%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%AD%90%E7%B3%BB%E7%BB%9F/" class="article-date">
+  <time datetime="2018-12-12T03:40:06.000Z" itemprop="datePublished">2018-12-12</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/JVM/">JVM</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2.2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">7 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>JVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的。<br>Java语言的一个非常重要的特点就是与平台的无关性。而使用Java虚拟机是实现这一特点的关键。一般的高级语言如果要在不同的平台上运行，至少需要编译成不同的目标代码。而引入Java语言虚拟机后，Java语言在不同平台上运行时不需要重新编译。Java语言使用Java虚拟机屏蔽了与具体平台相关的信息，使得Java语言编译程序只需生成在Java虚拟机上运行的目标代码（字节码），就可以在多种平台上不加修改地运行。Java虚拟机在执行字节码时，把字节码解释成具体平台上的机器指令执行。这就是Java的能够“一次编译，到处运行”的原因。</p>
+</blockquote>
+<a id="more"></a>
+<p>今天来为大家一步一步解析JVM的运行原理，在我们编译源代码.java文件时，Java编译器会生成具有相同文件名的.class文件（包含字节码）。当我们运行.class文件时，这些.class文件会进入各个步骤，这些步骤描述了整个JVM的工作内容,网上已经有详细的图解：<br><img src="https://store.machine-geek.cn/0002.png"></p>
+<h2 id="类加载器子系统-Class-Loader-Subsystem"><a href="#类加载器子系统-Class-Loader-Subsystem" class="headerlink" title="类加载器子系统(Class Loader Subsystem)"></a><strong>类加载器子系统(Class Loader Subsystem)</strong></h2><p>.class文件都由类加载子系统加载，它主要负责了3个工作：</p>
+<blockquote>
+<ol>
+<li>加载</li>
+<li>连接</li>
+<li>初始化</li>
+</ol>
+</blockquote>
+<h2 id="第一小节：加载"><a href="#第一小节：加载" class="headerlink" title="第一小节：加载"></a>第一小节：加载</h2><p>加载意味着该组件会从硬盘系统中把.class文件读取到JVM内存中，并在方法区域中存储该相应的二进制数据。例如：</p>
+<blockquote>
+<ol>
+<li>完全限定的类名称</li>
+<li>直接父类的完全限定名称</li>
+<li>方法信息</li>
+<li>变量信息</li>
+<li>构造函数信息</li>
+<li>修饰符信息</li>
+<li>常量池信息</li>
+<li>.class文件是类、接口还是枚举。</li>
+</ol>
+</blockquote>
+<p>对于每个加载的.class文件，JVM会立即在堆内存中创建一个java.lang.Class类型的对象。<br>我们可以用Class类来获取类的如级别信息，方法信息，构造函数，变量等。</p>
+<blockquote>
+<p>在JVM中将在堆内存中创建多少个对象？<br>对于每个加载的类型，即使我们在程序中多次使用类，也只会创建一个对象。</p>
+</blockquote>
+<p>加载器的类型有三种：</p>
+<blockquote>
+<ol>
+<li><strong>Bootstrap Class Loader(引导类加载器)</strong> - 这个类加载器负责加载包中存在的内部核心Java类rt.jar和其他类java.lang.*。默认情况下，每个JVM都可以使用它，并使用本机C/C++语言编写。这个类加载器没有父类，如果开发人员调用String.class.getClassLoader()它，它将返回null，任何基于它的代码都会抛出NullPointerExceptionJava。</li>
+<li><strong>Extensions Class Loader（扩展类加载器）</strong> - 这个类加载器是Primordial类加载器的子类，负责从扩展类路径（即jdk\jre\lib\ext）加载类。它是用Java语言编写的，相应的.class文件是sun.misc.Launcher$ExtClassLoder.class。</li>
+<li><strong>System Class Loader（系统类加载器）</strong> - 此类加载器是Extension类加载器的子类，负责从系统类路径加载类。它在内部使用’ CLASSPATH’环境变量，并用Java语言编写。JVM中的系统类加载器是由sun.misc.Launcher$AppClassLoader.class<br>实现的。</li>
+</ol>
+</blockquote>
+<h2 id="第二小节：链接"><a href="#第二小节：链接" class="headerlink" title="第二小节：链接"></a>第二小节：链接</h2><p>此组件执行类或接口的链接。由于此组件涉及新数据结构的分配，因此可能会抛出OutOfMemoryError。<br>它主要执行以下三项重要活动：</p>
+<blockquote>
+<ol>
+<li>验证</li>
+<li>准备</li>
+<li>解析</li>
+</ol>
+<p><strong>1.验证：</strong><br>在验证的过程中会检查以下几点：</p>
+</blockquote>
+<ul>
+<li>它是一个确保类的二进制表示在结构上是否正确的过程。</li>
+<li>JVM将检查.class文件是否由有效的编译器生成。</li>
+<li>.class文件的格式是否正确。</li>
+<li>内部字节码验证器负责此活动。</li>
+<li>字节码验证器是类装入器子系统的一部分。</li>
+<li>如果类或接口的二进制表示不满足静态或结构约束，则抛出VerifyError。抛出的错误是LinkageError(或它的子类)的实例。</li>
+</ul>
+<blockquote>
+<p>为什么Java是安全的语言？<br>就是因为字节码验证器的存在，字节码验证器是使java成为安全语言的特性之一。如果攻击者手动更改类文件以创建某种病毒，字节码验证器将检测到该类文件，因为它不是由有效编译器生成的。Verfication失败，我们会得到运行时异常说java.lang.VerifyError。</p>
+</blockquote>
+<p><strong>2.准备：</strong><br>在此阶段，JVM将为类级或接口级静态变量分配内存并分配默认值。<br>在初始化阶段，将原始值分配给静态变量，在准备阶段，只分配默认值。<br><strong>3.解析：</strong><br>解析是通过运行时常量池中的符号引用动态确定具体值的过程。简单地说，就是用方法区域的原始内存引用替换程序中的符号名的过程。</p>
+<p>举个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Testing</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] arg)</span> </span>&#123;</span><br><span class="line">        String s = <span class="keyword">new</span> String(<span class="string">&quot;MachineGeek&quot;</span>);</span><br><span class="line">        Student s1 = <span class="keyword">new</span> Student();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的类，由类加载器加载：</p>
+<blockquote>
+<ol>
+<li>Testing.class</li>
+<li>Object.class（Testing.class的父类）</li>
+<li>String.class</li>
+<li>Student.class</li>
+</ol>
+</blockquote>
+<p>解析内容如下：</p>
+<blockquote>
+<ul>
+<li>这些类的名称存储在Testing类的常量池中。</li>
+<li>在解析阶段，这些名称将替换为方法区域中的原始内存级别引用。</li>
+<li>所有符号引用（现在以运行时常量池的形式加载到方法区域中）将解析为此JVM加载的实际类型。</li>
+<li>如果可以解析符号引用，但导致定义冲突，会抛出一个IncompatibleClassChangeError。</li>
+<li>如果方法查找失败，方法解析会抛出一个NoSuchMethodError。</li>
+<li>如果方法查找成功并且方法是Abstract但Class不是Abstract则方法解析会抛出AbstractMethodError等等。</li>
+<li>所有上述错误都是类的子java.lang.LinkageError类。</li>
+</ul>
+</blockquote>
+<h2 id="第三小节：初始化"><a href="#第三小节：初始化" class="headerlink" title="第三小节：初始化"></a>第三小节：初始化</h2><p>在初始化阶段，所有静态变量都分配有原始值，静态块将从父级到子级以及从上到下执行。此过程需要仔细同步，因为JVM是多线程的，并且某些线程可能会尝试同时初始化相同的类或接口。<br>在加载，链接和初始化时，如果发生任何错误，我们将获得运行时异常说明java.lang.LinkageError 或其子类  java.lang.VerifyError。</p>
+<h2 id="ClassLoader如何在Java中工作"><a href="#ClassLoader如何在Java中工作" class="headerlink" title="ClassLoader如何在Java中工作"></a><strong>ClassLoader如何在Java中工作</strong></h2><p>Java中的类加载器有三个原则，即委托，可见性和唯一性。<br>委托：</p>
+<blockquote>
+<ul>
+<li>当虚拟机遇到某个类，JVM就会检查是否.class加载了指定的文件</li>
+<li>如果.class文件已经加载到方法区域中，那么JVM将考虑该类。如果没有，JVM请求类加载器子系统加载该特定类</li>
+<li>类加载器子系统将请求传递给Application Class Loader，后者又将此请求委托给Extensions Class Loader。Extensions Class Loader将再次将此请求委托给Primordial Class Loader</li>
+<li>Primordial Class Loader将在引导类路径（即jdk\jre\lib\rt.jar）中搜索此类。如果找到，则加载相应的.class文件</li>
+<li>如果没有，Primordial Class Loader会将请求委托给Extensions Class Loader。这将在jdk\jre\lib\ext路径中搜索类。如果找到，则加载相应的.class文件</li>
+<li>如果没有，Extensions Class Loader会将请求委托给Application Class Loader，并将在应用程序的类路径中搜索该类。如果找到，则加载它，否则开发人员将在运行时获得ClassNotFoundException。</li>
+</ul>
+</blockquote>
+<p>可见性：</p>
+<blockquote>
+<p>Application Class Loader具有查看父类加载器加载的类的可见性，但反之亦然，即如果类由Application Class Loader加载，稍后再次尝试使用Extensions Class Loader显式加载相同的类，将ClassNotFoundException在运行时抛出。例如：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 打印这个类的加载器</span></span><br><span class="line">System.out.println(<span class="string">&quot;Test.getClass().getClassLoader()?= &quot;</span> + Test.class.getClassLoader());</span><br><span class="line"><span class="comment">// 尝试再次显式地使用该类加载器的父类加载这个类。</span></span><br><span class="line">Class.forName(<span class="string">&quot;com.jcg.classloading.test.Test&quot;</span>, <span class="keyword">true</span>,  Test.class.getClassLoader().getParent());</span><br></pre></td></tr></table></figure>
+
+<p>唯一性：</p>
+<blockquote>
+<p>父类加载器加载的类不应再由子类加载器重新加载</p>
+</blockquote>
+<hr>
+<h2 id="如何在Java代码中加载类？"><a href="#如何在Java代码中加载类？" class="headerlink" title="如何在Java代码中加载类？"></a><strong>如何在Java代码中加载类？</strong></h2><p>类加载器是分层的。应用程序中的第一个类是在静态main()方法的帮助下专门加载的。所有后续类都由Static或Dynamic类加载技术加载。</p>
+<blockquote>
+<ul>
+<li><strong>静态加载：</strong>在此技术中，类通过new运算符静态加载</li>
+<li><strong>动态加载：</strong>在此技术中，使用Class.forName()或loadClass()方法以编程方式加载类。两者之间的区别在于前者在加载后初始化对象，而后者只加载类但不初始化对象。</li>
+</ul>
+</blockquote>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://blog.machine-geek.cn/2018/12/12/JVM%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86%E4%B9%8B%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%AD%90%E7%B3%BB%E7%BB%9F/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java-Virtual-Machine/" rel="tag">Java Virtual Machine</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2018/12/15/JVM%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86%E4%B9%8B%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            JVM运行原理之运行时数据区
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2018/12/05/%E7%AE%80%E6%98%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">简明数据库设计</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2018-2021
+        <i class="ri-heart-fill heart_icon"></i> MachineGeek
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/logo.jpg" alt="MachineGeek"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>如果觉得作者写的不错，请作者喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://store.machine-geek.cn/0037.png">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://store.machine-geek.cn/0038.png">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>

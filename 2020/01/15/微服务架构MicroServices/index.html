@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="MachineGeek" />
+   
+  <meta name="description" content="MachineGeek Blog" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    微服务架构MicroServices |  MachineGeek
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="MachineGeek" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-微服务架构MicroServices"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  微服务架构MicroServices
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/01/15/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84MicroServices/" class="article-date">
+  <time datetime="2020-01-14T18:21:14.000Z" itemprop="datePublished">2020-01-15</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MicroServices/">MicroServices</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">7 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="什么是微服务？"><a href="#什么是微服务？" class="headerlink" title="什么是微服务？"></a>什么是微服务？</h2><p><img src="https://store.machine-geek.cn/0019.jpg" alt="MicroServices"></p>
+<h3 id="WIKI"><a href="#WIKI" class="headerlink" title="WIKI"></a>WIKI</h3><blockquote>
+<p>Microservices are a software development technique —a variant of the service-oriented architecture (SOA) structural style— that arranges an application as a collection of loosely coupled services. In a microservices architecture, services are fine-grained and the protocols are lightweight.</p>
+</blockquote>
+<p>这是Wiki上对微服务的介绍，微服务是一种软件开发技术-面向服务的体系结构(SOA)结构样式的变体-将应用程序安排为松散耦合的服务集合。在微服务体系结构中，服务是细粒度的，协议是轻量级的。</p>
+<p><strong>简单来说，微服务是一种软件开发的架构模式。</strong></p>
+<a id="more"></a>
+<h2 id="分布式系统中的CAP定理"><a href="#分布式系统中的CAP定理" class="headerlink" title="分布式系统中的CAP定理"></a>分布式系统中的CAP定理</h2><p>在理论计算机科学中，CAP定理（也以计算机科学家Eric Brewer的名字命名为布鲁尔定理（Brewer’s theorem））指出，一个分布式系统具有 Consistency（一致性）、 Availability（可用性）、Partition tolerance（分区容错性）三条特性，分布式数据存储不可能同时保证三个中的两个以上。</p>
+<table>
+<thead>
+<tr>
+<th>定理</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>一致性（Consistency）</td>
+<td>每次读取都会收到最新的写入或错误。</td>
+</tr>
+<tr>
+<td>可用性（Availability）</td>
+<td>每个请求都会收到一个（非错误）响应，但不能保证它包含最新的写入。</td>
+</tr>
+<tr>
+<td>分区容错性（Partition tolerance）</td>
+<td>尽管节点之间网络丢弃（或延迟）了任意数量的消息，但系统仍继续运行。</td>
+</tr>
+</tbody></table>
+<p><strong>服务器之间的通信无论是出于什么原因都是有可能失败的，所以CAP中的P总是成立，我们只能在A和C中进行取舍。</strong></p>
+<h2 id="微服务特点"><a href="#微服务特点" class="headerlink" title="微服务特点"></a>微服务特点</h2><p>微服务架构并没有准确的定义，但是随着时间的流逝，业界内大家公认的微服务达成了以下共识：</p>
+<ul>
+<li>在微服务架构（MSA）服务通常流程是通过通信网络实现，利用技术无关目标协议。</li>
+<li>微服务架构中的服务可以独立部署。</li>
+<li>服务是围绕业务功能组织的。</li>
+<li>可以根据最适合的语言，使用不同的编程语言，数据库，硬件和软件环境来实现服务。</li>
+<li>服务规模小，支持消息传递，受上下文限制，可自主开发，可独立部署，去中心化以及通过自动化流程构建和发布。</li>
+</ul>
+<h2 id="微服务架构的应用场景"><a href="#微服务架构的应用场景" class="headerlink" title="微服务架构的应用场景"></a>微服务架构的应用场景</h2><h3 id="大型项目"><a href="#大型项目" class="headerlink" title="大型项目"></a>大型项目</h3><p>微服务架构适合大型复杂的项目，对于规模较小的系统并不适合。</p>
+<h3 id="团队人员"><a href="#团队人员" class="headerlink" title="团队人员"></a>团队人员</h3><p>小型团队使用微服务架构会增加许多的工作量。</p>
+<h3 id="业务拆分"><a href="#业务拆分" class="headerlink" title="业务拆分"></a>业务拆分</h3><p>不要太苛刻于业务拆分，有一些功能模块已经恰到好处，不适合再继续拆分。</p>
+<h3 id="重构系统"><a href="#重构系统" class="headerlink" title="重构系统"></a>重构系统</h3><p>如果你正在考虑用微服务重构某些正在使用的系统，一定要考虑得非常清楚，没有策略指引的迁移很可能会造成灾难性的后果。</p>
+<h3 id="紧密集成"><a href="#紧密集成" class="headerlink" title="紧密集成"></a>紧密集成</h3><p>需要快速处理实时数据，响应时间和可用资源方面具有很严格限制的系统，不适合使用微服务架构。</p>
+<h2 id="微服务核心"><a href="#微服务核心" class="headerlink" title="微服务核心"></a>微服务核心</h2><p>以下是实现微服务架构的核心关注点</p>
+<ul>
+<li>配置管理（Configuration management）：微服务应用程序的配置需要从代码中进行外部化，并可以通过简单的服务调用进行检索。</li>
+<li>服务发现（Service discovery）：维护可在微服务域中工作的服务实例列表。</li>
+<li>负载平衡（Load balancing）：扩展分布式系统的关键是能够运行一个组件的多个实例。然后必须通过负载均衡器将负载分配到这些实例上。</li>
+<li>API网关（API gateway）：微服务提供的API的粒度通常与服务客户端所需的粒度不同。API网关实现外观，并提供其他服务，例如代理，协议转换和其他管理功能。</li>
+<li>安全问题（Security concerns）：许多安全问题被推送到API网关实现中。对于分布式微服务应用程序，有意义的是不要重新发明安全轮，而是允许在所有服务共享的组件中定义策略并实施。</li>
+<li>集中式日志记录（Centralized logging）：拥有集中式日志收集和分析基础架构来管理大量服务非常重要-其中许多服务以分布式方式运行。</li>
+<li>集中度量（Centralized metric）：集中区域可以监视单个服务和整个系统的运行状况和性能，对于正常操作至关重要。</li>
+<li>分布式跟踪（Distributed tracing）：每个进程的日志记录和度量标准监视都有其位置，但是它们都无法重建事务在分布式系统中传播时所采用的复杂路径。分布式跟踪是微服务平台的基本工具。</li>
+<li>弹性和容错能力（Resilience and fault tolerance）：分布式系统必须能够自动绕过故障进行路由，并且能够将请求路由到将提供最佳响应的服务实例。</li>
+<li>自动缩放和自我修复（Autoscaling and self-healing）：分布式系统通过水平缩放来响应更高的负载：平台必须检测并自动响应这种情况。此外，系统需要检测故障并尝试在没有操作员输入的情况下自动重启。</li>
+<li>打包，部署和调度（Packaging, deployment and scheduling）：大型系统需要强大的软件包管理，部署系统需要管理滚动或蓝绿色部署，并在必要时进行回滚。调度程序可根据当前条件帮助确定可以将一组新服务部署到哪个特定执行节点。</li>
+<li>作业管理（Job management）：计划的计算与任何单个用户请求断开连接。</li>
+<li>单例应用程序（Singleton application）：限制特定服务作为整个系统中该服务的唯一实例运行。</li>
+</ul>
+<h2 id="服务之间的通信"><a href="#服务之间的通信" class="headerlink" title="服务之间的通信"></a>服务之间的通信</h2><p>由上面我们已经知道，微服务架构中服务之间的通信都是通过网络协议来完成的。我们现在常见的方式有以下几种：</p>
+<h3 id="HTTP方式"><a href="#HTTP方式" class="headerlink" title="HTTP方式"></a>HTTP方式</h3><p>HTTP的调用方式是最常见的，开发的服务接口都是RESTFUL风格，所以这里形成了异构，无论你采用什么编程语言都可以互相调用，所以服务之间HTTP方式的调用直接通过直接请求其API返回结果即可。</p>
+<h3 id="RPC方式"><a href="#RPC方式" class="headerlink" title="RPC方式"></a>RPC方式</h3><p>RPC（Remote Procedure Call）是远程过程调用，它是一种通过网络从远程计算机程序上请求服务，而不需要了解底层网络技术的协议。在OSI网络通信模型中，RPC跨越了传输层和应用层。RPC使得开发包括网络分布式多程序在内的应用程序更加容易，调用远程远程主机的方法像本机的方法一样。</p>
+<h3 id="消息通信"><a href="#消息通信" class="headerlink" title="消息通信"></a>消息通信</h3><p>与HTTP通信不同，所涉及的服务不会直接相互通信。而是，这些服务将消息推送到其他服务订阅的消息代理。这消除了与HTTP通信相关的许多复杂性。市面上有许多的非常优秀的消息队列软件可以使用。</p>
+<h3 id="事件驱动通信"><a href="#事件驱动通信" class="headerlink" title="事件驱动通信"></a>事件驱动通信</h3><p>此处仍然需要消息代理，因为各个服务会将其事件写入其中。但是与消息方法不同，消费服务不需要知道事件的细节，它们对事件的发生做出反应，而不是产生能会或可能不会传递的信息。服务可以监听他们关心的事件，并且提供为响应它们而需要运行的逻辑。</p>
+<h3 id="如何选择？"><a href="#如何选择？" class="headerlink" title="如何选择？"></a>如何选择？</h3><p>通长情况下，我们对外提供的API接口采用HTTP，而对于服务内部之间的调用，优先考虑RPC。至于某一些日志、推送、邮件等业务，放到消息通信或时间驱动通信比较好。</p>
+<h2 id="结言"><a href="#结言" class="headerlink" title="结言"></a>结言</h2><p>微服务架构是当下最为火爆的技术，但得考虑是否适合自己。互联网架构随着人类的发展依然在演变中，是否有一天真的会出现最完美的终极架构？</p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://blog.machine-geek.cn/2020/01/15/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84MicroServices/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/" rel="tag">Architecture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MicroServices/" rel="tag">MicroServices</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Software-Architecture/" rel="tag">Software Architecture</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/01/15/%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E6%9C%BA/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            有限状态自动机
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/01/14/%E7%94%A8%E6%88%B7%E6%A8%A1%E5%BC%8F%E5%92%8C%E5%86%85%E6%A0%B8%E6%A8%A1%E5%BC%8F/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">用户模式和内核模式</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2018-2021
+        <i class="ri-heart-fill heart_icon"></i> MachineGeek
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/logo.jpg" alt="MachineGeek"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>如果觉得作者写的不错，请作者喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://store.machine-geek.cn/0037.png">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://store.machine-geek.cn/0038.png">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>
