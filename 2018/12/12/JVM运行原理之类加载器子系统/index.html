@@ -202,7 +202,6 @@
 <p>Application Class Loader具有查看父类加载器加载的类的可见性，但反之亦然，即如果类由Application Class Loader加载，稍后再次尝试使用Extensions Class Loader显式加载相同的类，将ClassNotFoundException在运行时抛出。例如：</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 打印这个类的加载器</span></span><br><span class="line">System.out.println(<span class="string">&quot;Test.getClass().getClassLoader()?= &quot;</span> + Test.class.getClassLoader());</span><br><span class="line"><span class="comment">// 尝试再次显式地使用该类加载器的父类加载这个类。</span></span><br><span class="line">Class.forName(<span class="string">&quot;com.jcg.classloading.test.Test&quot;</span>, <span class="keyword">true</span>,  Test.class.getClassLoader().getParent());</span><br></pre></td></tr></table></figure>
-
 <p>唯一性：</p>
 <blockquote>
 <p>父类加载器加载的类不应再由子类加载器重新加载</p>

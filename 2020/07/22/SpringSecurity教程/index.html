@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">643</span>
+            <span class="post-count">698</span>
         </span>
     </span>
 
@@ -111,13 +111,19 @@
 <a id="more"></a>
 
 <h2 id="自定义加密方式"><a href="#自定义加密方式" class="headerlink" title="自定义加密方式"></a>自定义加密方式</h2><p>注册一个实现了<code>PasswordEncoder</code>接口的对象到<code>Spring容器</code>中，一般来说使用框架已经实现的<code>BCryptPasswordEncoder</code>就可以了。</p>
-<h2 id="自定义用户信息"><a href="#自定义用户信息" class="headerlink" title="自定义用户信息"></a>自定义用户信息</h2><p>写死在内存中或者配置文件中的方式就不讲了，写一个类实现<code>UserDetailsService</code>接口，实现<code>loadUserByUsername</code>方法，在这个方法中查询数据库，用于返回框架需要用到的用户信息，用户信息可以使用框架自带的<code>User</code>类，也可以自己写一个类实现<code>UserDetails</code>接口当做框架使用的用户信息类。<code>UserDetails</code>接口中有一个返回权限的<code>getAuthorities</code>方法，需要返回这个用户的权限信息，这个权限信息可以使用框架自带的<code>SimpleGrantedAuthority</code>类，也可以自己实现<code>GrantedAuthority</code>这个接口，作为框架的权限信息类。  </p>
-<p>权限验证本质上是一个字符串，但是在框架中没有分开角色类和权限类。统一为<code>GrantedAuthority</code>接口的实现类，所以使用字符串前缀”ROLE_”表示这是一个用户，没有这个前缀表示是一个权限，统一在<code>getAuthorities</code>方法中放在一起返回。</p>
+<h2 id="自定义用户信息"><a href="#自定义用户信息" class="headerlink" title="自定义用户信息"></a>自定义用户信息</h2><p>写一个类实现<code>UserDetails</code>接口，即可实现自定义框架上下文中的用户信息，可以用框架自带的<code>User</code>类。  </p>
+<p>写一个类实现<code>GrantedAuthority</code>接口，即可实现自定义用户信息中的权限信息，可以用框架自带的<code>SimpleGrantedAuthority</code>类。  </p>
+<blockquote>
+<p><strong>注意</strong>：权限验证本质上是一个字符串，但是在框架中没有分开角色类和权限类。统一为<code>GrantedAuthority</code>接口的实现类，所以使用字符串前缀”ROLE_”表示这是一个用户，没有这个前缀表示是一个权限，统一在<code>UserDetails</code>接口中的<code>getAuthorities</code>方法中放在一起返回。  </p>
+</blockquote>
+<p>写一个类实现<code>UserDetailsService</code>接口，实现<code>loadUserByUsername</code>方法，在这个方法中查询数据库，用于返回框架需要用到的用户信息，即可实现用户信息数据源。  </p>
 <h2 id="自定义登录逻辑"><a href="#自定义登录逻辑" class="headerlink" title="自定义登录逻辑"></a>自定义登录逻辑</h2><p>写一个类继承<code>UsernamePasswordAuthenticationFilter</code>过滤器，这个配置需要到配置类里面去配置的。  </p>
 <p>重写<code>attemptAuthentication</code>方法来获取<code>request</code>中的用户信息，并构建一个实现<code>Authentication</code>接口的类返回给框架用作验证，一般用框架自带的<code>usernamePasswordAuthenticationToken</code>类即可。  </p>
-<p>重写<code>successfulAuthentication</code>方法，这个方法会在验证成功后调用，可以在这里实现生成Token，存储Redis之类的操作。  </p>
+<p>重写<code>successfulAuthentication</code>方法，这个方法会在验证成功后调用，可以在这里实现生成Token，更新登录时间，存储Redis之类的操作。  </p>
 <p>重写<code>unsuccessfulAuthentication</code>方法，这个方法会在验证失败之后调用，可以自定义返回一些友好提示信息。</p>
-<h2 id="自定义登录界面"><a href="#自定义登录界面" class="headerlink" title="自定义登录界面"></a>自定义登录界面</h2><p>写好一个页面的<code>Controller</code>，然后到配置类里面去配置无需拦截。</p>
+<h2 id="自定义登录界面"><a href="#自定义登录界面" class="headerlink" title="自定义登录界面"></a>自定义登录界面</h2><p>在<code>Resource</code>下的<code>static</code>目录下写好登录页面，然后到配置类里面去配置，并设置不拦截。</p>
+<h2 id="自定义注销逻辑"><a href="#自定义注销逻辑" class="headerlink" title="自定义注销逻辑"></a>自定义注销逻辑</h2><p>写一个类实现<code>LogoutSuccessHandler</code>接口，实现<code>onLogoutSuccess</code>方法，在这个方法中可以删除<code>Token</code>信息，需要到配置类里去配置。</p>
+<h2 id="自定义拦截器-过滤器"><a href="#自定义拦截器-过滤器" class="headerlink" title="自定义拦截器/过滤器"></a>自定义拦截器/过滤器</h2><p>写一个类继承<code>OncePerRequestFilter</code>过滤器，重写<code>doFilterInternal</code>方法，实现自己的拦截/过滤逻辑。</p>
  
       <!-- reward -->
       
